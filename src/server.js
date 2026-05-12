@@ -23,16 +23,22 @@ const auth = basicAuth({
   realm: 'Cloaker Admin'
 });
 
-// ── Static assets (no auth) ───────────────────────────────────────────────────
+// ── Static assets ─────────────────────────────────────────────────────────────
 
 app.use('/static', express.static(path.join(__dirname, '../public/admin')));
+
+// ── Root route ────────────────────────────────────────────────────────────────
+
+app.get('/', (req, res) => {
+  res.redirect('/admin');
+});
 
 // ── Protected routes ──────────────────────────────────────────────────────────
 
 app.use('/admin', auth, require('./routes/admin'));
-app.use('/api',   auth, require('./routes/api'));
+app.use('/api', auth, require('./routes/api'));
 
-// ── Redirect (public) ─────────────────────────────────────────────────────────
+// ── Redirect routes ───────────────────────────────────────────────────────────
 
 app.use('/', require('./routes/redirect'));
 
@@ -47,7 +53,6 @@ app.use((err, req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`Cloaker running on port ${PORT}`);
-  console.log(`Admin panel: http://localhost:${PORT}/admin`);
 });
 
 module.exports = app;
